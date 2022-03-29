@@ -6,5 +6,6 @@ import com.seb.projects.Personal.Project.Management.Tool.Domain.Project;
 
 public interface ProjectRepository extends CrudRepository<Project, Long> {
 
+	Project findByProjectIdentifier (String projectIdentifier);
 
 }
