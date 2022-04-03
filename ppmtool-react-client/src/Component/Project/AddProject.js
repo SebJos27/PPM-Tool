@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { createProject } from "../../actions/projectAction";
+import {withNavigate} from "../../withNavigate"
 
-export default class AddProject extends Component {
+class AddProject extends Component {
   constructor() {
   super();
 
@@ -9,11 +13,19 @@ export default class AddProject extends Component {
     projectIdentifier: "",
     description: "",
     start_date: "",
-    end_date: ""
+    end_date: "",
+    error: {}
   };
 
   this.onChange = this.onChange.bind(this);
   this.onSubmit = this.onSubmit.bind(this);
+}
+
+static getDerivedStateFromProps(nextProps, prevState){
+  if(nextProps.errors!==prevState.error){
+    return { error: nextProps.errors};
+ }
+ else return null;
 }
 
 onChange(e) {
@@ -21,7 +33,7 @@ onChange(e) {
 }
 
 onSubmit(e) {
-  //e.preventDefault();
+  e.preventDefault();
   const newProject = {
     projectName: this.state.projectName,
     projectIdentifier: this.state.projectIdentifier,
@@ -30,24 +42,14 @@ onSubmit(e) {
     end_date: this.state.end_date
   };
 
-  console.log(newProject);
+  this.props.createProject(newProject,this.props.navigate)
 }
 
 render() 
 {
+  const {error} = this.state;
   return (
     <div>
-      {
-        //check name attribute input fields
-        //create constructor
-        //set state
-        //set value on input fields
-        //create onChange function
-        //set onChange on each input field
-        //bind on constructor
-        //check state change in the react extension
-      }
-
       <div className="project">
         <div className="container">
           <div className="row">
@@ -64,6 +66,7 @@ render()
                     value={this.state.projectName}
                     onChange={this.onChange}
                   />
+                  <p>{error.projectName}</p>
                 </div>
                 <div className="form-group">
                   <input
@@ -74,6 +77,7 @@ render()
                     value={this.state.projectIdentifier}
                     onChange={this.onChange}
                   />
+                 <p>{error.projectIdentifier}</p>
                 </div>
                 <div className="form-group">
                   <textarea
@@ -83,6 +87,7 @@ render()
                     value={this.state.description}
                     onChange={this.onChange}
                   />
+                 <p>{error.description}</p>
                 </div>
                 <h6>Start Date</h6>
                 <div className="form-group">
@@ -118,3 +123,17 @@ render()
   );
     }
   }
+
+  AddProject.propTypes = {
+    createProject: PropTypes.func.isRequired,
+    errors: PropTypes.object.isRequired
+  };
+
+  const mapStateToProps = state => ({
+    errors: state.error
+  });
+  
+  export default withNavigate( connect(
+    mapStateToProps,
+    { createProject }
+  )(AddProject));

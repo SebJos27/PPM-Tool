@@ -5,10 +5,13 @@ import Dashboard from './Component/Dashboard';
 import { Component } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import AddProject from './Component/Project/AddProject';
+import { Provider } from "react-redux";
+import store from "./store";
 
 class App extends Component {
   render() {
     return (  
+      <Provider store={store}>
       <BrowserRouter>    
       <div className="App">
         <Header />
@@ -19,6 +22,7 @@ class App extends Component {
         </Routes>
       </div>
       </BrowserRouter>
+      </Provider>
     );
   }
 }
